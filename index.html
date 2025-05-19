@@ -38,5 +38,30 @@
 );
 </script>
 <!-- End of LiveAgent integration script -->
+    <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const checkLA = setInterval(() => {
+      if (window.LiveAgent && LiveAgent.on) {
+        clearInterval(checkLA);
+        LiveAgent.on('messageReceived', async (evt) => {
+          if (evt.from === 'visitor') {
+            try {
+              const resp = await fetch('https://openai-proxy-oeto.onrender.com/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: evt.message })
+              });
+              const data = await resp.json();
+              LiveAgent.sendMessage(data.reply);
+            } catch (err) {
+              console.error('Error al llamar al proxy:', err);
+            }
+          }
+        });
+      }
+    }, 500);
+  });
+</script>
+
   </body>
 </html>
