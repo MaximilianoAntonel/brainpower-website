@@ -19,7 +19,7 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Start of LiveAgent integration script: Chat button: Boton Web Brainpower -->
+    <!-- Start of LiveAgent integration script -->
     <script type="text/javascript">
       (function(d, src, c) {
         var t = d.scripts[d.scripts.length - 1],
@@ -35,7 +35,9 @@
         t.parentElement.insertBefore(s, t.nextSibling);
       })(document,
         'https://brainpowerautomation.ladesk.com/scripts/track.js',
-        function(e) { LiveAgent.createButton('c30aotqg', e); }
+        function(e) {
+          LiveAgent.createButton('c30aotqg', e);
+        }
       );
     </script>
     <!-- End of LiveAgent integration script -->
@@ -47,6 +49,12 @@
           if (window.LiveAgent && LiveAgent.on) {
             clearInterval(checkLA);
 
+            // Enviar saludo automático al abrir chat
+            LiveAgent.on('chatOpened', () => {
+              LiveAgent.sendMessage("Hola, soy el asistente de BrainPower 🤖 ¿En qué puedo ayudarte?");
+            });
+
+            // Enviar consulta a OpenAI a través del proxy
             LiveAgent.on('messageReceived', async (evt) => {
               if (evt.from === 'visitor') {
                 try {
